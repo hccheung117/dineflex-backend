@@ -1,289 +1,99 @@
-# DineFlex API Documentation
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+</p>
 
-## Introduction
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-This document outlines the DineFlex API, which enables users to discover restaurants, view availability, and make bookings for early bird and last-minute dining offers.
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Base URL
+## Description
 
-All endpoints are relative to the base URL:
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-```
-https://api.dineflex.ie
-```
+## Project setup
 
-## API Endpoints
-
-### Restaurant Endpoints
-
-#### List All Restaurants
-
-Returns a list of all restaurants participating in the DineFlex programme.
-
-```
-GET /restaurants
-```
-
-**Response (200 OK)**
-
-```json
-[
-  {
-    "id": "12345",
-    "name": "Restaurant Name",
-    "thumbnailUrl": "https://example.com/image.jpg",
-    "location": "Dublin",
-    "cuisine": "Italian",
-    "hasEarlyBird": true,
-    "hasLastMinute": false
-  }
-]
+```bash
+$ npm install
 ```
 
-#### Get Restaurant Details
+## Compile and run the project
 
-Returns detailed information about a specific restaurant.
+```bash
+# development
+$ npm run start
 
-```
-GET /restaurants/:id
-```
+# watch mode
+$ npm run start:dev
 
-**Path Parameters**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | string | Unique identifier of the restaurant |
-
-**Response (200 OK)**
-
-```json
-{
-  "id": "12345",
-  "name": "Restaurant Name",
-  "description": "Detailed description of the restaurant",
-  "images": ["https://example.com/image1.jpg"],
-  "address": "123 Main Street, Dublin",
-  "phone": "+353 1 234 5678",
-  "openingHours": "Mon-Fri: 12:00-22:00, Sat-Sun: 13:00-23:00",
-  "cuisine": "Italian",
-  "earlyBirdOffers": [
-    {
-      "id": "offer123",
-      "title": "Early Dinner Special",
-      "description": "3 courses for €25",
-      "availableTimes": "17:00-19:00"
-    }
-  ],
-  "lastMinuteAvailable": false
-}
+# production mode
+$ npm run start:prod
 ```
 
-#### Get Restaurant Availability
+## Run tests
 
-Returns available time slots for a specific restaurant on a given date.
+```bash
+# unit tests
+$ npm run test
 
-```
-GET /restaurants/:id/availability
-```
+# e2e tests
+$ npm run test:e2e
 
-**Path Parameters**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | string | Unique identifier of the restaurant |
-
-**Query Parameters**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| date | string | Date in YYYY-MM-DD format |
-
-**Response (200 OK)**
-
-```json
-{
-  "restaurantId": "12345",
-  "date": "2023-10-15",
-  "availableSlots": [
-    {
-      "time": "17:30",
-      "type": "earlyBird",
-      "offerId": "offer123"
-    },
-    {
-      "time": "18:00",
-      "type": "earlyBird",
-      "offerId": "offer123"
-    },
-    {
-      "time": "19:30",
-      "type": "regular"
-    },
-    {
-      "time": "20:30",
-      "type": "lastMinute",
-      "discount": "20%"
-    }
-  ]
-}
+# test coverage
+$ npm run test:cov
 ```
 
-### Booking Endpoints
+## Deployment
 
-#### Create Booking
+When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
 
-Creates a new booking for a restaurant.
+If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
-```
-POST /bookings
-```
-
-**Request Body**
-
-```json
-{
-  "restaurantId": "12345",
-  "date": "2023-10-15",
-  "time": "18:00",
-  "partySize": 4,
-  "customerName": "John Smith",
-  "customerEmail": "john@example.com",
-  "customerPhone": "+353 87 123 4567"
-}
+```bash
+$ npm install -g mau
+$ mau deploy
 ```
 
-**Response (200 OK)**
+With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-```json
-{
-  "id": "booking789",
-  "status": "confirmed",
-  "restaurantId": "12345",
-  "restaurantName": "Restaurant Name",
-  "date": "2023-10-15",
-  "time": "18:00",
-  "partySize": 4,
-  "customerName": "John Smith",
-  "confirmationCode": "DINE12345"
-}
-```
+## Resources
 
-For validation errors, the response will include details about each invalid field:
+Check out a few resources that may come in handy when working with NestJS:
 
-```json
-{
-  "code": "VALIDATION_ERROR",
-  "message": "The request contains invalid data",
-  "details": {
-    "fields": [
-      {
-        "field": "email",
-        "code": "INVALID_FORMAT",
-        "message": "Email address format is invalid"
-      },
-      {
-        "field": "partySize",
-        "code": "OUT_OF_RANGE",
-        "message": "Party size must be between 1 and 12"
-      }
-    ]
-  }
-}
-```
+- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
+- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
+- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
+- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
+- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
+- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
+- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
+- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-#### Get Booking Details
+## Support
 
-Returns details about a specific booking.
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-```
-GET /bookings/:id
-```
+## Stay in touch
 
-**Path Parameters**
+- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | string | Unique identifier of the booking |
+## License
 
-**Response (200 OK)**
-
-```json
-{
-  "id": "booking789",
-  "status": "confirmed",
-  "restaurantId": "12345",
-  "restaurantName": "Restaurant Name",
-  "date": "2023-10-15",
-  "time": "18:00",
-  "partySize": 4,
-  "customerName": "John Smith",
-  "confirmationCode": "DINE12345"
-}
-```
-
-## Error Handling
-
-The API uses standard HTTP status codes to indicate the general category of response:
-
-| Status Code | Description |
-|-------------|-------------|
-| 200 | Success |
-| 400 | Bad Request - Client-side input errors |
-| 401 | Unauthorized - Authentication required |
-| 403 | Forbidden - Insufficient permissions |
-| 404 | Not Found - Resource doesn't exist |
-| 409 | Conflict - Resource conflict (e.g., double booking) |
-| 422 | Unprocessable Entity - Validation failures |
-| 500 | Server Error - Unexpected errors |
-
-All error responses follow this format:
-
-```json
-{
-  "code": "ERROR_CODE",
-  "message": "Human-readable error message",
-  "details": {
-    // Additional context (varies by error type)
-  }
-}
-```
-
-## Error Codes Reference
-
-### General Errors
-
-| Error Code | Description |
-|------------|-------------|
-| `INVALID_REQUEST` | Request is missing required fields or has an invalid format |
-| `SERVER_ERROR` | Unexpected server error occurred |
-
-### Restaurant Errors
-
-| Error Code | Description |
-|------------|-------------|
-| `RESTAURANT_NOT_FOUND` | Restaurant with the specified ID was not found |
-| `RESTAURANT_CLOSED` | Restaurant is closed on the requested date |
-
-### Booking Errors
-
-| Error Code | Description |
-|------------|-------------|
-| `BOOKING_NOT_FOUND` | Booking with the specified ID was not found |
-| `BOOKING_TIME_UNAVAILABLE` | The requested time slot is no longer available |
-| `BOOKING_PARTY_TOO_LARGE` | Party size exceeds restaurant capacity |
-| `BOOKING_PAST_DATE` | Cannot book for a date in the past |
-
-### Validation Errors
-
-| Error Code | Description |
-|------------|-------------|
-| `VALIDATION_ERROR` | One or more fields contain invalid data |
-| `VALIDATION_INVALID_DATE_FORMAT` | Date format is invalid (should be YYYY-MM-DD) |
-
-#### Field-Specific Validation Codes
-
-| Error Code | Description |
-|------------|-------------|
-| `VALIDATION_INVALID_FORMAT` | Field format is invalid |
-| `VALIDATION_REQUIRED_FIELD` | Field is required but was not provided |
-| `VALIDATION_OUT_OF_RANGE` | Numeric value is outside accepted range |
+Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
