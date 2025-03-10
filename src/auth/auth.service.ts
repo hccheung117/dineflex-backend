@@ -11,7 +11,7 @@ export class AuthService {
 		private jwtService: JwtService,
 	) {}
 
-	async signUp(username: string, password: string, role: UserRole = UserRole.USER): Promise<void> {
+	async signUp(username: string, password: string, role: UserRole = UserRole.CUSTOMER): Promise<void> {
 		return this.userRepository.signUp(username, password, role);
 	}
 
