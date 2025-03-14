@@ -1,22 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
 export enum UserRole {
 	CUSTOMER = 'CUSTOMER',
-	BUSINESS = 'BUSINESS',
-	AGENT = 'AGENT',
+	RESTAURANT_OWNER = 'RESTAURANT_OWNER',
+	SERVICE_AGENT = 'SERVICE_AGENT',
 	ADMIN = 'ADMIN',
 }
 
 @Entity()
-@Unique(['username'])
+@Unique(['email'])
 export class User {
 	@PrimaryGeneratedColumn()
 	id: number;
 
 	@Column()
-	username: string;
+	name: string;
+
+	@Column()
+	email: string;
 
 	@Column()
 	@Exclude()

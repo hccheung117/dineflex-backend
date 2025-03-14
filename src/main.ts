@@ -1,9 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as dotenv from 'dotenv';
+import { AppLogger } from './common/logger.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const logger = new AppLogger();
+  app.useLogger(logger);
 
   const config = new DocumentBuilder()
     .setTitle('DineFlex Backend API')

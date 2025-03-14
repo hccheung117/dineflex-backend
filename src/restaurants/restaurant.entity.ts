@@ -32,6 +32,36 @@ export enum Counties {
 	WICKLOW = 'Wicklow',
 }
 
+@Entity()
+export class Restaurant {
+	@PrimaryGeneratedColumn('uuid')
+	id: string;
+
+	@Column()
+	name: string;
+
+	@Column({
+		type: 'enum',
+		enum: Counties,
+	})
+	location: Counties;
+	
+	@Column()
+	cuisine: string;
+
+	@Column()
+	phone: string;
+	
+	@Column({ default: false })
+	hasEarlyBird: boolean;
+	
+	@Column({ default: false })
+	hasLastMinute: boolean;
+
+	@Column()
+	thumbnailUrl: string;
+}
+
 export enum Cuisines {
 	AMERICAN = 'American',
 	MEXICAN = 'Mexican',
@@ -72,34 +102,4 @@ export enum Cuisines {
 	MALAYSIAN = 'Malaysian',
 	INDONESIAN = 'Indonesian',
 	PACIFIC_ISLANDS = 'Pacific Islands',
-}
-
-@Entity()
-export class Restaurant {
-	@PrimaryGeneratedColumn('uuid')
-	id: string;
-
-	@Column()
-	name: string;
-
-	@Column()
-	thumbnailUrl: string;
-
-	@Column({
-		type: 'enum',
-		enum: Counties,
-	})
-	location: Counties;
-
-	@Column({
-		type: 'enum',
-		enum: Cuisines,
-	})
-	cuisine: Cuisines;
-
-	@Column()
-	hasEarlyBird: boolean;
-
-	@Column()
-	hasLastMinute: boolean;
 }
