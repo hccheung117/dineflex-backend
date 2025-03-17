@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
@@ -29,6 +29,9 @@ export class User {
 	@Exclude()
 	salt: string;
 
+	@Column()
+	phone: string;
+
 	@Column({
 		type: 'enum',
 		enum: UserRole,
@@ -40,4 +43,9 @@ export class User {
 		const hash = await bcrypt.hash(password, this.salt);
 		return hash === this.password;
 	}
+
+	// @BeforeInsert()
+	// async hashPassword() {
+	// 	this.password = await bcrypt.hash(this.password, 10);
+	// }
 }

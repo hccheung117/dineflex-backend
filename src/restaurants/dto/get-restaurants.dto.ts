@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional, IsString, IsEnum, IsBoolean } from "class-validator";
-import { Counties } from "../restaurant.model";
+import { Counties } from "../restaurant.entity";
 import { Cuisines } from "../restaurant.entity";
 
 export class GetRestaurantsDto {

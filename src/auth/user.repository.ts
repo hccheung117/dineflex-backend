@@ -8,9 +8,9 @@ export class UserRepository extends Repository<User> {
 	constructor(private dataSource: DataSource) {
 		super(User, dataSource.createEntityManager());
 	}
-	async signUp(username: string, password: string, role: UserRole): Promise<void> {
+	async signUp(email: string, password: string, role: UserRole): Promise<void> {
 		const user = new User();
-		user.username = username;
+		user.email = email;
 		user.salt = await bcrypt.genSalt();
 		user.password = await bcrypt.hash(password, user.salt);
 		user.role = role;
@@ -26,8 +26,8 @@ export class UserRepository extends Repository<User> {
 		}
 	}
 
-	async validateUserPassword(username: string, password: string): Promise<User | null> {
-		const user = await this.findOne({ where: { username } });
+	async validateUserPassword(email: string, password: string): Promise<User | null> {
+		const user = await this.findOne({ where: { email } });
 		if (user && (await user.validatePassword(password))) {
 			return user;
 		}

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { User } from "../auth/user.entity";
 
 export enum Counties {
 	CARLOW = 'Carlow',
@@ -58,8 +59,17 @@ export class Restaurant {
 	@Column({ default: false })
 	hasLastMinute: boolean;
 
+	@ManyToOne(() => User, (user) => user.id)
+	owner: User;
+
 	@Column()
 	thumbnailUrl: string;
+
+	@Column('simple-array', { nullable: true })
+	images: string[];
+
+	@Column()
+	description: string;
 }
 
 export enum Cuisines {
