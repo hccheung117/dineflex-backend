@@ -21,7 +21,7 @@ export class RestaurantsService {
 
 	async findOne(id: string): Promise<Restaurant> {
 		const lookup = await this.restaurantRepo.findOne({ where: { id } });
-		if (!lookup) throw new NotFoundException('Restaurant with ID "${id}" is not found.');
+		if (!lookup) throw new NotFoundException(`Restaurant with ID "${id}" is not found.`);
 		return lookup;
 	}
 
