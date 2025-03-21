@@ -30,8 +30,9 @@ export class UserRepository extends Repository<User> {
 		await this.delete(userToBeDeleted.id);
 	}
 
-	async signUp(email: string, password: string, role: UserRole): Promise<void> {
+	async signUp(name: string, email: string, password: string, role: UserRole): Promise<void> {
 		const user = new User();
+		user.name = name;
 		user.email = email;
 		user.salt = await bcrypt.genSalt();
 		user.password = await bcrypt.hash(password, user.salt);
@@ -77,11 +78,10 @@ export class UserRepository extends Repository<User> {
 		return this.findById(id);
 	}
 
-	async updateUserInfo(id: number, { name, phone }: { name: string, phone: string }): Promise<User> {
-		const userToUpdate = await this.findById(id);
-		if (name) userToUpdate.name = name;
-		if (phone) userToUpdate.phone = phone;
-		return this.save(userToUpdate);
-	}
-
+	// async updateUserInfo(id: number, { name, phone }: { name: string, phone: string }): Promise<User> {
+	// 	const userToUpdate = await this.findById(id);
+	// 	if (name) userToUpdate.name = name;
+	// 	if (phone) userToUpdate.phone = phone;
+	// 	return this.save(userToUpdate);
+	// }
 }

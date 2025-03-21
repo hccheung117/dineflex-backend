@@ -1,8 +1,10 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
 import { User, UserRole } from './user.entity';
+import { SignUpDto } from './dto/sign-up.dto';
+import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,11 +13,13 @@ export class AuthService {
 		private jwtService: JwtService,
 	) {}
 
-	async signUp(email: string, password: string, role: string): Promise<void> {
-		if (!(role in UserRole)) {
-			throw new BadRequestException('The role of the new user is not valid.');
-		}
-		return this.userRepository.signUp(email, password, role as UserRole);
+	async signUp(signUpDto: SignUpDto): Promise<void> {
+		const { name, email, password, role } = signUpDto;
+
+		const existingUser = await this.userRepository.findOne({ where: { email } });
+		if (existingUser) throw new ConflictException('Email already in use by another user.');
+
+		this.userRepository.signUp(name, email, password, role);
 	}
 
 	async signIn(email: string, password: string): Promise<{ accessToken: string }> {
@@ -39,5 +43,11 @@ export class AuthService {
 
 	async updatePassword(id: number, newPassword: string): Promise<User> {
 		return await this.userRepository.updatePassword(id, newPassword);
+	}
+
+	async updateUserInfo(id: number, updateUserInfoDto: UpdateUserInfoDto): Promise<User> {
+		const userToUpdate = await this.userRepository.findById(id);
+		Object.assign(userToUpdate, updateUserInfoDto);
+		return this.userRepository.save(userToUpdate);
 	}
 }
