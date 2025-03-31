@@ -24,4 +24,7 @@ export class Booking {
 
 	@Column({ default: 'confirmed' })
 	status: string;
+
+	@Column({ unique: true })
+	confirmationCode: string;
 }

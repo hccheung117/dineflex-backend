@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { Restaurant } from './restaurants/restaurant.entity';
 import { User } from './auth/user.entity';
 import { Booking } from 'src/bookings/booking.entity';
+import { BookingsModule } from './bookings/bookings.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { Booking } from 'src/bookings/booking.entity';
       synchronize: true,
     }),
     RestaurantsModule,
-    AuthModule],
+    AuthModule,
+    BookingsModule],
   controllers: [AppController],
   providers: [AppService],
 })

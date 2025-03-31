@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsBoolean, IsOptional, IsEnum, IsArray, IsPhoneNumber, IsUrl, IsNotEmpty, MinLength } from "class-validator";
-import { Counties} from "../restaurant.entity";
+import { Counties } from "../restaurant.entity";
 
 export class CreateRestaurantDto {
 	@IsString()

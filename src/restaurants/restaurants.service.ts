@@ -7,12 +7,16 @@ import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { v4 as uuid } from 'uuid';
 import { User, UserRole } from 'src/auth/user.entity';
+import { RestaurantTimeSlot } from './restaurant-time-slot.entity';
+import { Weekday } from 'src/common/weekdays.enum';
+import { UpdateWeeklyScheduleDto } from './dto/update-weekly-schedule.dto';
 
 @Injectable()
 export class RestaurantsService {
 	constructor(
 		@InjectRepository(Restaurant)
 		private restaurantRepo: Repository<Restaurant>,
+		private timeSlotRepo: Repository<RestaurantTimeSlot>,
 	) {}
 
 	async findAll(): Promise<Restaurant[]> {
@@ -48,6 +52,43 @@ export class RestaurantsService {
 			throw new UnauthorizedException('Only the owner can delete the restaurant from this app.');
 		}
 		await this.restaurantRepo.delete(id);
+	}
+
+	async updateWeeklySchedule(
+		restaurantId: string,
+		dto: UpdateWeeklyScheduleDto,
+		ownerId: number,
+	): Promise<void> {
+		const restaurant = await this.restaurantRepo.findOne({
+			where: { id: restaurantId },
+			relations: ['owner'],
+		});
+
+		if (!restaurant) throw new NotFoundException('Restaurant is not found.');
+		if (restaurant.owner.id !== ownerId) throw new UnauthorizedException();
+
+		const days = Object.keys(dto) as (keyof UpdateWeeklyScheduleDto)[];
+
+		for (const day of days) {
+			const newTimeSlots = dto[day];
+			if (!newTimeSlots) continue;
+
+			const existingSlotObject = await this.timeSlotRepo.findOne({
+				where: { restaurant: { id: restaurantId }, dayOfWeek: day as Weekday },
+			});
+
+			if (existingSlotObject) {
+				existingSlotObject.timeSlots = newTimeSlots;
+				await this.timeSlotRepo.save(existingSlotObject);
+			} else {
+				const newSlotObject = this.timeSlotRepo.create({
+					restaurant,
+					dayOfWeek: day as Weekday,
+					timeSlots: newTimeSlots,
+				});
+				await this.timeSlotRepo.save(newSlotObject);
+			}
+		}
 	}
 
 	// async findAll(getRestaurantsDto: GetRestaurantsDto, user: User): Promise<Restaurant[]> {

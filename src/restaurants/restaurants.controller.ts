@@ -8,6 +8,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 // import { Request } from 'express';
 import { User } from '../auth/user.entity';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { UpdateWeeklyScheduleDto } from './dto/update-weekly-schedule.dto';
 
 // @ApiBearerAuth()
 // @ApiTags()
@@ -47,6 +48,19 @@ export class RestaurantsController {
 	@Delete(':id')
 	async delete(@Param('id') id: string, @Request() req) {
 		return this.restaurantsService.delete(id, req.user);
+	}
+
+	@Put(':id/schedule')
+	@UseGuards(JwtAuthGuard)
+	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+	@ApiOperation({ summary: 'Update weekly schedule for a restaurant (owner only)' })
+	@ApiBearerAuth()
+	async updateSchedule(
+		@Param('id') id: string,
+		@Body() dto: UpdateWeeklyScheduleDto,
+		@Request() req,
+	) {
+		return this.restaurantsService.updateWeeklySchedule(id, dto, req.user.id);
 	}
 
 	// @ApiOperation({ summary: 'Retrieve all restaurants with optional filters' })
