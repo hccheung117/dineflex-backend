@@ -11,12 +11,34 @@ import { RestaurantTimeSlot } from './restaurant-time-slot.entity';
 import { Weekday } from 'src/common/weekdays.enum';
 import { UpdateWeeklyScheduleDto } from './dto/update-weekly-schedule.dto';
 
+const DEFAULT_TIME_SLOTS = [
+	'17:00',
+	'17:30',
+	'18:00',
+	'18:30',
+	'19:00',
+	'19:30',
+	'20:00',
+	'20:30',
+];
+
+const WEEKDAYS: Weekday[] = [
+	Weekday.MONDAY,
+	Weekday.TUESDAY,
+	Weekday.WEDNESDAY,
+	Weekday.THURSDAY,
+	Weekday.FRIDAY,
+	Weekday.SATURDAY,
+	Weekday.SUNDAY,
+];
+
 @Injectable()
 export class RestaurantsService {
 	constructor(
 		@InjectRepository(Restaurant)
-		private restaurantRepo: Repository<Restaurant>,
-		private timeSlotRepo: Repository<RestaurantTimeSlot>,
+		private readonly restaurantRepo: Repository<Restaurant>,
+		@InjectRepository(RestaurantTimeSlot)
+		private readonly timeSlotRepo: Repository<RestaurantTimeSlot>,
 	) {}
 
 	async findAll(): Promise<Restaurant[]> {
@@ -34,7 +56,18 @@ export class RestaurantsService {
 			throw new UnauthorizedException('Only restaurant owners can add a restaurant to this app.');
 		}
 		const newRestaurant = this.restaurantRepo.create({ ...restaurantData, owner });
-		return this.restaurantRepo.save(newRestaurant);
+		const savedRestaurant = await this.restaurantRepo.save(newRestaurant);
+
+		const seedSlotObject = WEEKDAYS.map((day) =>
+			this.timeSlotRepo.create({
+				restaurant: savedRestaurant,
+				dayOfWeek: day,
+				timeSlots: DEFAULT_TIME_SLOTS,
+			}),
+		);
+
+		await this.timeSlotRepo.save(seedSlotObject);
+		return savedRestaurant;
 	}
 
 	async update(id: string, updateData: Partial<Restaurant>, owner: User): Promise<Restaurant> {

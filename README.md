@@ -24,27 +24,67 @@ https://github.com/hccheung117/dineflex-apidoc
 
 ## Database Schema
 
+This schema supports:
+- User management with roles
+- Restaurant listings
+- Booking system with availability
+- Weekly schedule per restaurant
+- Time-slot-specific offers (early bird, last-minute)
+
 ### Restaurants
 
-```typescript
-// TODO: Define restaurant schema with fields like name, address, cuisine type, etc.
-```
+`restaurants` table
+
+| Column          | Type     | Description                                  |
+|-----------------|----------|----------------------------------------------|
+| `id`            | UUID     | Primary key                                  |
+| `name`          | String   | Restaurant name                              |
+| `description`   | String   | Long description of the restaurant           |
+| `location`      | String   | City or area                                 |
+| `cuisine`       | String   | Type of cuisine (e.g. Italian, Japanese)     |
+| `phone`         | String   | Contact phone number                         |
+| `images`        | String[] | Array of image URLs                          |
+| `hasEarlyBird`  | Boolean  | Whether early bird offers are supported      |
+| `hasLastMinute` | Boolean  | Whether last-minute offers are supported     |
+| `ownerId`       | UUID     | Foreign key → `users(id)` (restaurant owner) |
 
 ### Users
 
-```typescript
-// TODO: Define user schema with different roles (customer, restaurant owner, service agent, admin)
-// Include fields like email, password, role, profile information
-```
+`users` table
+
+| Column      | Type   | Description                                      |
+|-------------|--------|--------------------------------------------------|
+| `id`        | UUID   | Primary key                                      |
+| `name`      | String | Full name of the user                            |
+| `email`     | String | Unique email address                             |
+| `password`  | String | Hashed password                                  |
+| `salt`      | String | Password salt                                    |
+| `role`      | Enum   | User role: `customer`, `restaurant_owner`, `admin` |
+
+> **Enum: `UserRole`**  
+> `customer` | `restaurant_owner` | `admin`
 
 ### Bookings
 
-```typescript
-// TODO: Define booking schema with fields like date, time, party size, status
-// Include relationships with restaurants and users
-```
+`bookings` table
+
+| Column           | Type     | Description                                   |
+|------------------|----------|-----------------------------------------------|
+| `id`             | UUID     | Primary key                                   |
+| `userId`         | UUID     | Foreign key → `users(id)` (customer)          |
+| `restaurantId`   | UUID     | Foreign key → `restaurants(id)`               |
+| `date`           | Date     | Booking date (YYYY-MM-DD)                     |
+| `time`           | String   | Booking time (HH:MM)                          |
+| `partySize`      | Integer  | Number of people                              |
+| `customerName`   | String   | Name entered for reservation                  |
+| `customerEmail`  | String   | Email entered for reservation                 |
+| `customerPhone`  | String   | Phone number entered for reservation          |
+| `status`         | String   | Booking status (e.g. `confirmed`)             |
+| `confirmationCode` | String | Unique confirmation string                    |
 
 ### Offers
+
+None at this moment.
 
 ```typescript
 // TODO: Define offers schema for early bird and last-minute special deals
@@ -53,18 +93,29 @@ https://github.com/hccheung117/dineflex-apidoc
 
 ### Availability Slots
 
-```typescript
-// TODO: Define availability slots schema to track restaurant table availability
-// Include fields like date, time, capacity, and booking status
-```
+`restaurant_time_slot` table
+
+| Column        | Type      | Description                                   |
+|---------------|-----------|-----------------------------------------------|
+| `id`          | UUID      | Primary key                                   |
+| `restaurantId`| UUID      | Foreign key → `restaurants(id)`               |
+| `dayOfWeek`   | Enum      | Day of the week (`monday` to `sunday`)        |
+| `timeSlots`   | String[]  | List of available times (e.g. `['17:00']`)    |
+| `slotType`    | Enum      | Slot type: `regular`, `earlyBird`, `lastMinute` |
+
+> **Enum: `Weekday`**  
+> `monday` | `tuesday` | `wednesday` | `thursday` | `friday` | `saturday` | `sunday`  
+
+> **Enum: `SlotType`**  
+> `regular` | `earlyBird` | `lastMinute`
 
 ### Entity Relationships
 
-```
-// TODO: Document primary relationships between entities
-// Example: Restaurants have many Availability Slots
-// Example: Users can have many Bookings
-```
+1. Customer requests availability for a restaurant on a specific date.
+2. System determines the weekday.
+3. Queries `restaurant_time_slot` for that weekday and restaurant.
+4. Removes booked times from `bookings` table.
+5. Returns available time slots, each annotated with `slotType`.
 
 ## Development Guidelines
 
